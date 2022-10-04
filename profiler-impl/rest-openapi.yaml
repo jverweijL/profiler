@@ -1,0 +1,27 @@
+info:
+  description: "Profiler REST API"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  title: "Profiler"
+  version: v1.0
+openapi: 3.0.1
+tags:
+  - name: "profiler"
+    description: "Everything related to profiler"
+    externalDocs:
+      description: "Find out more"
+      url: "https://www.liferay.com"
+paths:
+  /profiler/agent/add:
+    post:
+      tags:
+        - "profiler"
+      summary: "Add a new agent"
+      description: "We need a query/agent within the payload from objects"
+      operationId: "addAgent"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid status value"

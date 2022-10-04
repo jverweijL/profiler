@@ -1,0 +1,6 @@
+Bundle-Name: profiler-api
+Bundle-SymbolicName: profiler.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	profiler.dto.v1_0,\
+	profiler.resource.v1_0

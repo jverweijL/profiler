@@ -1,0 +1,5 @@
+Bundle-Name: profiler-test
+Bundle-SymbolicName: profiler.test
+Bundle-Version: 1.0.0
+-includeresource: profiler.client.jar=../profiler-client/build/libs/profiler.client-1.0.0.jar;lib:=true
+-provider-policy: ${replacestring;${range;[==,==]};.*,(.*)];$1}

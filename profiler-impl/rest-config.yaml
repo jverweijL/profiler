@@ -1,0 +1,9 @@
+apiDir: "../profiler-api/src/main/java"
+apiPackagePath: "profiler"
+application:
+    baseURI: "/profiler"
+    className: "ProfilerApplication"
+    name: "Profiler"
+author: "jverweij"
+clientDir: "../profiler-client/src/main/java"
+testDir: "../profiler-test/src/testIntegration/java"

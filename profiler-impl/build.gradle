@@ -1,0 +1,17 @@
+dependencies {
+	compile project(":modules:profiler:profiler-api")
+
+	compileOnly group: "com.liferay.portal", name: "release.portal.api"
+
+	restBuilder group: "com.liferay", name: "com.liferay.portal.tools.rest.builder", version: "1.0.222"
+
+
+	// CUSTOM
+	compileInclude group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.10'
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	compileInclude group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.10'
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+	compileInclude group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.10'
+}
+
+group = "profiler"

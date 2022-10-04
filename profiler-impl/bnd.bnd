@@ -1,0 +1,12 @@
+Bundle-Name: profiler-impl
+Bundle-SymbolicName: profiler.impl
+Bundle-Version: 1.0.0
+Import-Package: \
+	!org.apache.xml.resolver*,\
+	!org.apache.avalon*,\
+    !org.apache.log*,\
+    !com.google.gson*,\
+    !org.apache.tapestry5.json,\
+    !org.codehaus.jettison.json,\
+    !org.slf4j.impl,\
+	*

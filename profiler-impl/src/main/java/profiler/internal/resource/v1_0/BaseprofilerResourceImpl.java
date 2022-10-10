@@ -56,6 +56,26 @@ public abstract class BaseprofilerResourceImpl implements profilerResource {
 		return responseBuilder.build();
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/profiler/v1.0/profiler/agent/remove'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "We need to remove from objects"
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "profiler")}
+	)
+	@javax.ws.rs.Path("/profiler/agent/remove")
+	@javax.ws.rs.POST
+	@Override
+	public Response removeAgent() throws Exception {
+		Response.ResponseBuilder responseBuilder = Response.ok();
+
+		return responseBuilder.build();
+	}
+
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
 		this.contextAcceptLanguage = contextAcceptLanguage;
 	}

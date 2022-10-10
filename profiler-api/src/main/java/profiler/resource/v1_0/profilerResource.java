@@ -43,6 +43,8 @@ public interface profilerResource {
 
 	public Response addAgent() throws Exception;
 
+	public Response removeAgent() throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}

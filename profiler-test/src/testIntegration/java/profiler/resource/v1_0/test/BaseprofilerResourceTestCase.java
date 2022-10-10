@@ -98,6 +98,11 @@ public abstract class BaseprofilerResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testRemoveAgent() throws Exception {
+		Assert.assertTrue(false);
+	}
+
 	protected void assertContains(Object profiler, List<Object> profilers) {
 		boolean contains = false;
 

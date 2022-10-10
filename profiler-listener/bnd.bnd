@@ -1,0 +1,13 @@
+Bundle-Name: profiler-listener
+Bundle-SymbolicName: profiler.listener
+Bundle-Version: 1.0.0
+Export-Package: profiler.listener.api
+Import-Package: \
+	!org.apache.xml.resolver*,\
+	!org.apache.avalon*,\
+    !org.apache.log*,\
+    !com.google.gson*,\
+    !org.apache.tapestry5.json,\
+    !org.codehaus.jettison.json,\
+    !org.slf4j.impl,\
+	*

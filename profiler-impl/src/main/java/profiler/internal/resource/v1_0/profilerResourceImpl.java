@@ -43,8 +43,69 @@ public class profilerResourceImpl extends BaseprofilerResourceImpl {
 	String ELASTIC_ENDPOINT = "http://elasticsearch:9200/";
 	String SECRET = "7ea98fc6-ebc1-4f81-9be6-b6f597b9020f";
 	String INDEX = "custom-profiler-agent";
+	String TYPE = "_doc";
 
 	private final CloseableHttpClient httpClient = HttpClients.createDefault();
+
+// doesn't seem to work
+	@Override
+	public Response removeAgent() throws Exception {
+		System.out.println("HELLO REMOVE AGENT");
+
+		HttpServletRequest request =
+				_portal.getOriginalServletRequest(
+						contextHttpServletRequest);
+
+		String apikey = request.getHeader("x-api-key");
+
+		if (apikey.equalsIgnoreCase(SECRET)) {
+			System.out.println("REMOVE: " + request.getMethod());
+
+			// Read from request
+			StringBuilder stringBuilder = new StringBuilder();
+			BufferedReader bufferedReader = null;
+
+			try {
+				InputStream inputStream = request.getInputStream();
+
+				if (inputStream != null) {
+					bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+					char[] charBuffer = new char[128];
+					int bytesRead = -1;
+
+					while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+						stringBuilder.append(charBuffer, 0, bytesRead);
+					}
+				} else {
+					stringBuilder.append("");
+				}
+			} catch (IOException ex) {
+				//logger.error("Error reading the request body...");
+			} finally {
+				if (bufferedReader != null) {
+					try {
+						bufferedReader.close();
+					} catch (IOException ex) {
+						//logger.error("Error closing bufferedReader...");
+					}
+				}
+			}
+
+			JSONObject json = JSONFactoryUtil.createJSONObject(stringBuilder.toString());
+
+			if (json != null) {
+
+				System.out.println("ID: " + json.getString("classPK"));
+
+				HttpUriRequest req = RequestBuilder.delete(ELASTIC_ENDPOINT + INDEX + "/" + TYPE + "/" + json.getString("classPK") + "?refresh").build();
+
+				runRequest(req);
+			}
+		}
+
+		return super.removeAgent();
+	}
 
 	@Override
 	public Response addAgent() throws Exception {
@@ -57,7 +118,7 @@ public class profilerResourceImpl extends BaseprofilerResourceImpl {
 		//check whether secret matches...
 		if (apikey.equalsIgnoreCase(SECRET)) {
 
-			System.out.println(request.getMethod());
+			System.out.println("ADD/UPDATE: " + request.getMethod());
 
 			// Read from request
 			StringBuilder stringBuilder = new StringBuilder();
@@ -99,13 +160,13 @@ public class profilerResourceImpl extends BaseprofilerResourceImpl {
 				System.out.println("ID: " + json.getString("classPK"));
 
 				String agent = "{\n" +
-						query +
+						"\"query\" : " + query +
 						"  ,\"agentname\" : \"" + name + "\"\n" +
 						"}";
 
 				System.out.println(agent);
 
-				HttpUriRequest req = RequestBuilder.put(ELASTIC_ENDPOINT + INDEX + "/_doc/" + json.getString("classPK") + "?refresh").setEntity(new StringEntity(agent, ContentType.APPLICATION_JSON)).build();
+				HttpUriRequest req = RequestBuilder.put(ELASTIC_ENDPOINT + INDEX + "/" + TYPE + "/" + json.getString("classPK") + "?refresh").setEntity(new StringEntity(agent, ContentType.APPLICATION_JSON)).build();
 
 				runRequest(req);
 			}
@@ -135,7 +196,7 @@ public class profilerResourceImpl extends BaseprofilerResourceImpl {
 
 	@Activate
 	public void setMappings() throws Exception{
-		//TODO reindex ??
+		//TODO reindex all agents??
 		System.out.println("Starting percolator prepare");
 
 		// prepare mapping

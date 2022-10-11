@@ -2,6 +2,7 @@ package profiler.listener.api;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -32,9 +33,8 @@ public class ProfilerListener extends BaseModelListener<AssetEntry>{
 
     //TODO make configurable options
     String ELASTIC_ENDPOINT = "http://elasticsearch:9200/";
-    String SECRET = "7ea98fc6-ebc1-4f81-9be6-b6f597b9020f";
+    String AGENTHIT_ENDPOINT = "http://localhost:8080/o/c/profilerhits/";
     String INDEX = "custom-profiler-agent";
-    String TYPE = "_doc";
 
     @Override
     public void onAfterCreate(AssetEntry entry) throws ModelListenerException {
@@ -66,17 +66,54 @@ public class ProfilerListener extends BaseModelListener<AssetEntry>{
             HttpEntity entity = response.getEntity();
             System.out.println("response code profilerlistener: " + response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() == 200) {
-                System.out.println(EntityUtils.toString(entity, "UTF-8"));
-
                 JSONObject json = JSONFactoryUtil.createJSONObject(EntityUtils.toString(entity, "UTF-8"));
+
                 // get hits and store them in agent hits object
+                JSONArray hits = json.getJSONObject("hits").getJSONArray("hits");
+
+                for (Object hit : hits) {
+                    JSONObject item = (JSONObject) hit;
+
+                    String jsonhit = "{\n" +
+                            "  \"agentclassPK\": " +  item.getString("_id") + ",\n" +
+                            "  \"entryclassPK\": " +  entry.getClassPK() + ",\n" +
+                            "  \"title\": \""+ entry.getTitleCurrentValue() + "\"\n" +
+                            "}";
+
+                    HttpUriRequest hitreq = RequestBuilder.post(AGENTHIT_ENDPOINT)
+                                            .setEntity(new StringEntity(jsonhit, ContentType.APPLICATION_JSON))
+                                            .addHeader("accept","application/json")
+                                            .addHeader("Content-Type","application/json").build();
+                    runRequest(hitreq);
+                }
             }
 
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         } catch (JSONException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
+    }
 
+    private void runRequest(HttpUriRequest req) {
+        System.out.println("Run request");
+        System.out.println(req.getURI().toString());
+
+        HttpClient client = HttpClientBuilder.create().build();
+
+        try {
+            HttpResponse response = client.execute(req);
+            HttpEntity entity = response.getEntity();
+            System.out.println("response code: " + response.getStatusLine().getStatusCode());
+            System.out.println(response.getAllHeaders());
+            //if (response.getStatusLine().getStatusCode() == 200) {
+                System.out.println(EntityUtils.toString(entity, "UTF-8"));
+            //}
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

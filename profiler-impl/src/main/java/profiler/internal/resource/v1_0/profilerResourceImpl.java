@@ -157,14 +157,10 @@ public class profilerResourceImpl extends BaseprofilerResourceImpl {
 
 			if (json != null) {
 
-				System.out.println("ID: " + json.getString("classPK"));
-
 				String agent = "{\n" +
 						"\"query\" : " + query +
 						"  ,\"agentname\" : \"" + name + "\"\n" +
 						"}";
-
-				System.out.println(agent);
 
 				HttpUriRequest req = RequestBuilder.put(ELASTIC_ENDPOINT + INDEX + "/" + TYPE + "/" + json.getString("classPK") + "?refresh").setEntity(new StringEntity(agent, ContentType.APPLICATION_JSON)).build();
 
@@ -197,7 +193,7 @@ public class profilerResourceImpl extends BaseprofilerResourceImpl {
 	@Activate
 	public void setMappings() throws Exception{
 		//TODO reindex all agents??
-		System.out.println("Starting percolator prepare");
+		//System.out.println("Starting percolator prepare");
 
 		// prepare mapping
 		String mapping = "{\n" +
@@ -207,7 +203,8 @@ public class profilerResourceImpl extends BaseprofilerResourceImpl {
 				"        \"type\" : \"percolator\"\n" +
 				"      },\n" +
 				"      \"body\" : {\n" +
-				"        \"type\": \"text\"\n" +
+				"        \"type\": \"text\",\n" +
+				"		 \"analyzer\" : \"english\""+
 				"      },\n" +
 		        "      \"agentname\" : {\n" +
 				"        \"type\": \"text\"\n" +
